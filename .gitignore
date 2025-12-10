@@ -1,0 +1,9 @@
+screenshots/
+screenshots_grid/
+screenshots_replay
+hardcode.py
+panorama_player.py
+panorama_sequence.json
+screenshot.py
+sequencemaker.py
+stitch_panorama.py

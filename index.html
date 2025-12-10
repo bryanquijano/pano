@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Panorama Viewer</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        #panorama {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 1. Custom Icon for the "Teleport" hotspot */
+        .teleport-hotspot {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="white" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h-2V9h4v8zm-2-9V7h2v1h-2z"/></svg>');
+            background-size: cover;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+        }
+
+        /* 2. Custom Style for the Text Tooltip */
+        .custom-tooltip span {
+            visibility: hidden;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            /* Position above the icon */
+            left: 50%;
+            margin-left: -60px;
+            width: 120px;
+        }
+
+        .custom-tooltip:hover span {
+            visibility: visible;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="panorama"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+    <script>
+        // --- SCENE DEFINITION ---
+        const scenes = {
+            // SCENE 1: area5.jpg
+            "scene_area5": {
+                "title": "Area 5",
+                "type": "equirectangular",
+                "panorama": "area5.jpg",
+                "hfov": 100,
+                "autoLoad": true,
+                "hotSpots": [
+                    {
+                        // The Teleport Hotspot (Go to Area 4)
+                        "pitch": -2.5,
+                        "yaw": 45,
+                        "type": "scene",
+                        "text": "Go to Area 4",
+                        "sceneId": "scene_area4",
+                        "cssClass": "teleport-hotspot",
+                        "targetPitch": 0,
+                        "targetYaw": -200
+                    },
+                    {
+                        // The Info Hotspot (Example)
+                        "pitch": 10,
+                        "yaw": -30,
+                        "type": "info",
+                        "createTooltipFunc": hotspotTooltip,
+                        // FIX: We must wrap the text inside 'createTooltipArgs'
+                        "createTooltipArgs": {
+                            "text": "This is a custom info note"
+                        }
+                    }
+                ]
+            },
+
+            // SCENE 2: area4.png
+            "scene_area4": {
+                "title": "Area 4",
+                "type": "equirectangular",
+                "panorama": "area4.png",
+                "hfov": 100,
+                "hotSpots": [
+                    {
+                        // The Teleport Hotspot (Go back to Area 5)
+                        "pitch": -4.5,
+                        "yaw": 122,
+                        "type": "scene",
+                        "text": "Go Back to Area 5",
+                        "sceneId": "scene_area5",
+                        "cssClass": "teleport-hotspot",
+                        
+                    }
+                ]
+            }
+        };
+
+        // --- VIEWER INITIALIZATION ---
+        const viewer = pannellum.viewer('panorama', {
+            "default": {
+                "firstScene": "scene_area5", // Start at Area 5
+                "sceneFadeDuration": 1000,
+
+                "hotSpotDebug": true,
+            },
+            "scenes": scenes
+        });
+
+        // --- CUSTOM TOOLTIP FUNCTION ---
+        // This function expects 'args' to have a 'text' property
+        function hotspotTooltip(hotSpotDiv, args) {
+            hotSpotDiv.classList.add('custom-tooltip');
+            const span = document.createElement('span');
+
+            // This line caused the error before because args was undefined
+            span.innerHTML = args.text;
+
+            hotSpotDiv.appendChild(span);
+        }
+
+    </script>
+</body>
+
+</html>
