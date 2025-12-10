@@ -7,3 +7,4 @@ panorama_sequence.json
 screenshot.py
 sequencemaker.py
 stitch_panorama.py
+tiler/

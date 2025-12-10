@@ -68,10 +68,19 @@
         const scenes = {
             // SCENE 1: area5.jpg
             "scene_area5": {
-                "title": "Area 5",
-                "type": "equirectangular",
-                "panorama": "area5.jpg",
-                "hfov": 100,
+                "title": "Area 5 (Multires)",
+                "type": "multires",
+                "multiRes": {
+                    // ERROR FIX: Point to the folder relative to index.html
+                    "path": "./area5_tiles/%l/%s%y_%x",
+                    "fallbackPath": "./area5_tiles/fallback/%s",
+
+                    // These stay exactly as they were in your config.json
+                    "extension": "jpg",
+                    "tileResolution": 512,
+                    "maxLevel": 4,
+                    "cubeResolution": 2920
+                },
                 "autoLoad": true,
                 "hotSpots": [
                     {
@@ -99,27 +108,31 @@
                 ]
             },
 
-            // SCENE 2: area4.png
+            // SCENE 2: area4
             "scene_area4": {
-                "title": "Area 4",
-                "type": "equirectangular",
-                "panorama": "area4.png",
-                "hfov": 100,
+                "title": "Area 4 (Multires)",
+                "type": "multires",
+                "multiRes": {
+                    "path": "./area4_tiles/%l/%s%y_%x",
+                    "fallbackPath": "./area4_tiles/fallback/%s",
+                    "extension": "jpg", // Make sure this matches your config.json!
+                    "tileResolution": 512,
+                    "maxLevel": 4,
+                    "cubeResolution": 3256
+                }, // <--- THIS COMMA AND BRACE WERE MISSING!
+
                 "hotSpots": [
                     {
-                        // The Teleport Hotspot (Go back to Area 5)
                         "pitch": -4.5,
                         "yaw": 122,
                         "type": "scene",
                         "text": "Go Back to Area 5",
                         "sceneId": "scene_area5",
-                        "cssClass": "teleport-hotspot",
-                        
+                        "cssClass": "teleport-hotspot"
                     }
                 ]
             }
         };
-
         // --- VIEWER INITIALIZATION ---
         const viewer = pannellum.viewer('panorama', {
             "default": {
